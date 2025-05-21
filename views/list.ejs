@@ -8,17 +8,7 @@
 <body class="bg-gray-100 p-6">
   <div class="max-w-6xl mx-auto">
   
-      <form method="GET" action="/admin/list" class="mb-6 text-center">
-  <label for="owner" class="mr-2 text-gray-700 font-medium">Filtrar por dueño:</label>
-  <select name="owner" id="owner" onchange="this.form.submit()" class="border p-2 rounded">
-    <option value="">Todos</option>
-    <% owners.forEach(o => { %>
-      <option value="<%= o %>" <%= selectedOwner === o ? 'selected' : '' %>><%= o %></option>
-    <% }) %>
-  </select>
-</form>
-
-  
+    
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Todos los Perros Registrados</h1>
 
 <% if (typeof success !== 'undefined' && success) { %>
@@ -26,9 +16,7 @@
     ✅ Cambios guardados correctamente.
   </div>
 <% } %>
-
-
-    <% if (dogs.length === 0) { %>
+ <% if (dogs.length === 0) { %>
       <p class="text-center text-gray-600">No hay perros registrados aún.</p>
       
   
@@ -75,6 +63,18 @@
       </div>
     <% } %>
   </div>
+  
+    <form method="GET" action="/admin/list" class="mb-6 text-center">
+  <label for="owner" class="mr-2 text-gray-700 font-medium">Filtrar por dueño:</label>
+  <select name="owner" id="owner" onchange="this.form.submit()" class="border p-2 rounded">
+    <option value="">Todos</option>
+    <% owners.forEach(o => { %>
+      <option value="<%= o %>" <%= selectedOwner === o ? 'selected' : '' %>><%= o %></option>
+    <% }) %>
+  </select>
+</form>
+
+  
 </body>
 </html>
 
