@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/dog');
+const Dog = require('./models/Dog');
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado a MongoDB"))
@@ -97,7 +97,9 @@ app.get('/admin/register', requireAdmin, (req, res) => {
 app.post('/admin/register', requireAdmin, upload.single('image'), async (req, res) => {
   const { name, owner, email, phone, breed, food, illnesses } = req.body;
   const image = req.file ? '/uploads/' + req.file.filename : null;
-  const generatedPassword = Math.random().toString(36).slice(-8);
+  let existingUser = await Dog.findOne({ email });
+  const password = existingUser ? existingUser.password : Math.random().toString(36).slice(-8);
+
   const dog = new Dog({
     name,
     owner,
@@ -107,9 +109,11 @@ app.post('/admin/register', requireAdmin, upload.single('image'), async (req, re
     food,
     illnesses,
     image,
-    password: generatedPassword,
+    password,
     role: 'user'
   });
+
+  console.log(`🔐 Contraseña para ${email}: ${password}`);
 
   console.log(`🔐 Contraseña generada para ${email}: ${generatedPassword}`);
   await dog.save();
@@ -148,23 +152,6 @@ app.get('/dog/:id', async (req, res) => {
     });
   } catch (err) {
     res.status(500).send('Error al buscar el perro');
-  }
-});
-
-
-app.post('/dog/:id/location', async (req, res) => {
-  try {
-    const { lat, lon } = req.body;
-    await Dog.findByIdAndUpdate(req.params.id, {
-      lastLocation: {
-        lat,
-        lon,
-        date: new Date()
-      }
-    });
-    res.sendStatus(200);
-  } catch (err) {
-    res.status(500).send('Error al guardar ubicación');
   }
 });
 
