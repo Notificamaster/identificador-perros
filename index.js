@@ -1,4 +1,4 @@
-// index.js actualizado para subir imágenes a Cloudinary
+// index.js actualizado con restauración de filtro 'role: user'
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -8,7 +8,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/dog');
+const Dog = require('./models/Dog');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
@@ -93,17 +93,10 @@ app.get('/user/list', requireUser, async (req, res) => {
 });
 
 app.get('/admin/list', requireAdmin, async (req, res) => {
-  const dogs = await Dog.find({ role: 'user' }); // ← esta línea muestra todos los perros
+  const dogs = await Dog.find({ role: 'user' });
   const success = req.query.success === '1';
   res.render('list', { dogs, success });
 });
-
-  const dogs = await Dog.find(query);
-  const success = req.query.success === '1';
-
-  res.render('list', { dogs, success, owners, selectedOwner: owner });
-});
-
 
 app.get('/admin/register', requireAdmin, (req, res) => {
   res.render('admin_register');
@@ -125,7 +118,8 @@ app.post('/admin/register', requireAdmin, upload.single('image'), async (req, re
     food,
     illnesses,
     image,
-    password
+    password,
+    role: 'user'
   });
 
   console.log(`🔐 Contraseña para ${email}: ${password}`);
