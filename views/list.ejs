@@ -9,7 +9,7 @@
   <div class="max-w-6xl mx-auto">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Todos los Perros Registrados</h1>
 
-<% if (success) { %>
+<% if (typeof success !== 'undefined' && success) { %>
   <div class="mb-4 p-4 bg-green-100 text-green-800 rounded text-center border border-green-300">
     ✅ Cambios guardados correctamente.
   </div>
