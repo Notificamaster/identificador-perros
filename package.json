@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-   "start": "node index.js", 
-   "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -12,12 +12,14 @@
   "description": "",
   "dependencies": {
     "body-parser": "^2.2.0",
+    "cloudinary": "^1.41.3",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "mongoose": "^8.15.0",
-    "dotenv": "^16.3.1",
     "multer": "^2.0.0",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.3",
     "uuid": "^11.1.0"
   },
