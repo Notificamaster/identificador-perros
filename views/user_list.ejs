@@ -1,32 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Mis Perros</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/css/styles.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-6 text-center">🐾 Mis Perros Registrados</h1>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center">Mis Perros Registrados</h1>
 
     <% if (dogs.length === 0) { %>
-      <p class="text-center text-gray-600">No has registrado ningún perro aún.</p>
-    <% } %>
+      <p class="text-center text-gray-600">Aún no tienes perros registrados.</p>
+    <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% dogs.forEach(dog => { %>
+          <div class="bg-white shadow-md rounded-lg p-4 flex flex-col">
+            <% if (dog.image) { %>
+              <img src="<%= dog.image %>" alt="<%= dog.name %>" class="h-48 w-full object-cover rounded mb-3">
+            <% } else { %>
+              <div class="h-48 w-full bg-gray-200 rounded mb-3 flex items-center justify-center text-gray-500">
+                Sin imagen
+              </div>
+            <% } %>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <% dogs.forEach(dog => { %>
-        <div class="bg-white shadow rounded p-4">
-          <% if (dog.image) { %>
-            <img src="<%= dog.image %>" class="w-full h-48 object-cover rounded mb-3" alt="Perro">
-          <% } %>
-          <h2 class="text-xl font-semibold mb-1"><%= dog.name %></h2>
-          <p><strong>Raza:</strong> <%= dog.breed %></p>
-          <p><strong>Comida favorita:</strong> <%= dog.food %></p>
-          <a href="/dog/<%= dog._id %>" class="text-blue-500 underline mt-2 inline-block">Ver ficha</a>
-        </div>
-      <% }) %>
-    </div>
+            <h2 class="text-xl font-bold mb-1"><%= dog.name %></h2>
+            <p class="text-gray-700"><strong>Raza:</strong> <%= dog.breed %></p>
+            <p class="text-gray-700"><strong>Comida favorita:</strong> <%= dog.food %></p>
+            <p class="text-gray-700"><strong>Enfermedades:</strong> <%= dog.illnesses %></p>
+
+            <% if (dog.lastLocation && dog.lastLocation.lat) { %>
+              <p class="text-sm mt-2 text-gray-600">
+                📍 <a href="https://maps.google.com/?q=<%= dog.lastLocation.lat %>,<%= dog.lastLocation.lon %>" target="_blank" class="text-blue-500 underline">Ver última ubicación</a>
+              </p>
+            <% } %>
+
+            <a href="/dog/<%= dog._id %>" class="mt-auto bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded mt-4 transition">
+              Ver ficha
+            </a>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
   </div>
 </body>
 </html>
