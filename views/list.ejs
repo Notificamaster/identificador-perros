@@ -64,15 +64,7 @@
     <% } %>
   </div>
   
-    <form method="GET" action="/admin/list" class="mb-6 text-center">
-  <label for="owner" class="mr-2 text-gray-700 font-medium">Filtrar por dueño:</label>
-  <select name="owner" id="owner" onchange="this.form.submit()" class="border p-2 rounded">
-    <option value="">Todos</option>
-    <% owners.forEach(o => { %>
-      <option value="<%= o %>" <%= selectedOwner === o ? 'selected' : '' %>><%= o %></option>
-    <% }) %>
-  </select>
-</form>
+    
 
   
 </body>
