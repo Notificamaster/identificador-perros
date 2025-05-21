@@ -31,7 +31,8 @@
           </a>
         </p>
         <p class="text-sm text-gray-600">
-          Registrada el <%= new Date(lastLocation.date).toLocaleString() %>
+          Registrada el <%= new Date(lastLocation.date).toLocaleString("es-MX", { timeZone: "America/Mexico_City" }) %>
+
         </p>
       </div>
     <% } else { %>
