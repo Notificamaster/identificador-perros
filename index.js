@@ -49,6 +49,9 @@ function requireUser(req, res, next) {
   if (req.session.user && req.session.user.role === 'user') return next();
   res.redirect('/login');
 }
+app.get('/admin/register', requireAdmin, (req, res) => {
+  res.render('admin_register');
+});
 
 function requireAdmin(req, res, next) {
   if (req.session.user && req.session.user.role === 'admin') return next();
@@ -212,6 +215,7 @@ app.post('/dog/:id/location', async (req, res) => {
     res.status(500).send('Error al guardar ubicación o enviar correo');
   }
 });
+
 
 app.get('/admin/edit/:id', requireAdmin, async (req, res) => {
   const dog = await Dog.findById(req.params.id);
