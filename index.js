@@ -93,9 +93,28 @@ app.get('/user/list', requireUser, async (req, res) => {
 });
 
 app.get('/admin/list', requireAdmin, async (req, res) => {
-  const dogs = await Dog.find();
-  res.render('list', { dogs });
+  const { owner } = req.query;
+
+  const query = {
+    owner: { $exists: true, $ne: null },
+    role: { $exists: false }
+  };
+
+  if (owner) {
+    query.owner = owner; // filtro exacto por nombre del dueño
+  }
+
+  const owners = await Dog.distinct("owner", {
+    owner: { $exists: true },
+    role: { $exists: false }
+  });
+
+  const dogs = await Dog.find(query);
+  const success = req.query.success === '1';
+
+  res.render('list', { dogs, success, owners, selectedOwner: owner });
 });
+
 
 app.get('/admin/register', requireAdmin, (req, res) => {
   res.render('admin_register');
