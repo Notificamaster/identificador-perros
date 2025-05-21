@@ -1,73 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title><%= name %> - Identificador</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/css/styles.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Ficha del Perro</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-green-100 via-white to-blue-100 min-h-screen flex items-center justify-center px-4">
-
-  <div class="bg-white shadow-2xl rounded-lg p-8 max-w-lg w-full">
-
-    <% if (typeof success !== 'undefined') { %>
-      <div class="bg-green-100 text-green-800 p-3 rounded mb-4 border border-green-300 text-center">
-        <%= success %>
-      </div>
-    <% } %>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg shadow max-w-xl w-full">
+    <h1 class="text-2xl font-bold mb-4">Identificación del Perro</h1>
 
     <% if (image) { %>
-      <img src="<%= image %>" alt="Foto de <%= name %>" class="w-32 h-32 object-cover rounded-full mx-auto mb-4 shadow">
+      <img src="<%= image %>" alt="Foto del perro" class="w-full h-auto rounded mb-4">
     <% } %>
 
-    <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">🐶 <%= name %></h1>
-    <p class="text-center text-gray-500 mb-4">Ficha de identificación</p>
+    <ul class="space-y-2 text-lg">
+      <li><strong>Nombre:</strong> <%= name %></li>
+      <li><strong>Dueño:</strong> <%= owner %></li>
+      <li><strong>Correo:</strong> <%= email %></li>
+      <li><strong>Teléfono:</strong> <%= phone %></li>
+      <li><strong>Raza:</strong> <%= breed %></li>
+      <li><strong>Comida favorita:</strong> <%= food %></li>
+      <li><strong>Enfermedades:</strong> <%= illnesses %></li>
+    </ul>
 
-    <div class="space-y-2 text-sm text-gray-700">
-      <p><strong>Dueño:</strong> <%= owner %></p>
-      <p><strong>Correo:</strong> <%= email %></p>
-      <p><strong>Teléfono:</strong> <%= phone %></p>
-      <p><strong>Raza:</strong> <%= breed %></p>
-      <p><strong>Comida favorita:</strong> <%= food %></p>
-      <p><strong>Enfermedades:</strong> <%= illnesses %></p>
-      <% if (lastLocation && lastLocation.lat) { %>
-        <p><strong>Última ubicación:</strong>
-          <a href="https://maps.google.com/?q=<%= lastLocation.lat %>,<%= lastLocation.lon %>"
-             target="_blank"
-             class="text-blue-500 underline">Ver en Google Maps</a><br>
-          <span class="text-xs text-gray-500">(<%= new Date(lastLocation.date).toLocaleString() %>)</span>
+    <% if (lastLocation && lastLocation.lat) { %>
+      <div class="mt-4">
+        <p>📍 <strong>Última ubicación:</strong>
+          <a href="https://maps.google.com/?q=<%= lastLocation.lat %>,<%= lastLocation.lon %>" target="_blank" class="text-blue-600 underline">
+            Ver en Google Maps
+          </a>
         </p>
-    
-    </div>
-
-   
-
+        <p class="text-sm text-gray-600">
+          Registrada el <%= new Date(lastLocation.date).toLocaleString() %>
+        </p>
+      </div>
+    <% } else { %>
+      <p class="mt-4 text-gray-500 text-sm">Ubicación no disponible aún.</p>
+    <% } %>
   </div>
-  
+
+  <!-- Script para enviar geolocalización al escanear el NFC -->
   <script>
-  window.onload = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(async position => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
+    window.onload = () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
 
-        try {
-          await fetch('/dog/<%= id %>/location', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ lat, lon })
-          });
-          console.log("Ubicación enviada");
-        } catch (err) {
-          console.error("Error al enviar ubicación:", err);
-        }
-      });
-    }
-  };
-</script>
-
+          try {
+            await fetch('/dog/<%= id %>/location', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ lat, lon })
+            });
+            console.log("✅ Ubicación enviada correctamente");
+          } catch (err) {
+            console.error("❌ Error al enviar ubicación:", err);
+          }
+        });
+      }
+    };
+  </script>
 </body>
 </html>
 
