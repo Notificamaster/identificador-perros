@@ -113,9 +113,9 @@ app.post('/admin/register', requireAdmin, upload.single('image'), async (req, re
     role: 'user'
   });
 
-  console.log(`🔐 Contraseña para ${email}: ${password}`);
+  console.log(`🔐 Contraseña  generada para ${email}: ${password}`);
 
-  console.log(`🔐 Contraseña generada para ${email}: ${generatedPassword}`);
+  
   await dog.save();
   res.redirect('/admin/register');
 });
