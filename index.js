@@ -155,6 +155,23 @@ app.get('/dog/:id', async (req, res) => {
   }
 });
 
+app.post('/dog/:id/location', async (req, res) => {
+  try {
+    const { lat, lon } = req.body;
+    await Dog.findByIdAndUpdate(req.params.id, {
+      lastLocation: {
+        lat,
+        lon,
+        date: new Date()
+      }
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send('Error al guardar ubicación');
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
