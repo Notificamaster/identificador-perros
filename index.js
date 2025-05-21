@@ -123,8 +123,7 @@ app.post('/admin/register', requireAdmin, upload.single('image'), async (req, re
     food,
     illnesses,
     image,
-    password,
-    role: 'user'
+    password
   });
 
   console.log(`🔐 Contraseña para ${email}: ${password}`);
