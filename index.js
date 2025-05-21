@@ -93,15 +93,9 @@ app.get('/user/list', requireUser, async (req, res) => {
 });
 
 app.get('/admin/list', requireAdmin, async (req, res) => {
-  const dogs = await Dog.find({
-    owner: { $exists: true, $ne: null },
-    role: { $exists: false }
-  });
-
-  const success = req.query.success === '1';
-  res.render('list', { dogs, success });
+  const dogs = await Dog.find();
+  res.render('list', { dogs });
 });
-
 
 app.get('/admin/register', requireAdmin, (req, res) => {
   res.render('admin_register');
@@ -206,32 +200,6 @@ app.post('/dog/:id/location', async (req, res) => {
     res.status(500).send('Error al guardar ubicación o enviar correo');
   }
 });
-
-app.get('/admin/edit/:id', requireAdmin, async (req, res) => {
-  const dog = await Dog.findById(req.params.id);
-  res.render('admin_edit', { dog });
-});
-
-app.post('/admin/delete/:id', requireAdmin, async (req, res) => {
-  await Dog.findByIdAndDelete(req.params.id);
-  res.redirect('/admin/list');
-});
-
-app.post('/admin/edit/:id', requireAdmin, upload.single('image'), async (req, res) => {
-  const { name, owner, email, phone, breed, food, illnesses } = req.body;
-  const update = {
-    name, owner, email, phone, breed, food, illnesses
-  };
-
-  if (req.file) {
-    update.image = req.file.path;
-  }
-
-  await Dog.findByIdAndUpdate(req.params.id, update);
-  res.redirect('/admin/list?success=1');
-});
-
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
