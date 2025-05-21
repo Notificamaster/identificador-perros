@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/dog');
+const Dog = require('./models/Dog');
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado a MongoDB"))
@@ -97,7 +97,21 @@ app.get('/admin/register', requireAdmin, (req, res) => {
 app.post('/admin/register', requireAdmin, upload.single('image'), async (req, res) => {
   const { name, owner, email, phone, breed, food, illnesses } = req.body;
   const image = req.file ? '/uploads/' + req.file.filename : null;
-  const dog = new Dog({ name, owner, email, phone, breed, food, illnesses, image, password: 'admin-added', role: 'user' });
+  const generatedPassword = Math.random().toString(36).slice(-8);
+  const dog = new Dog({
+    name,
+    owner,
+    email,
+    phone,
+    breed,
+    food,
+    illnesses,
+    image,
+    password: generatedPassword,
+    role: 'user'
+  });
+
+  console.log(`🔐 Contraseña generada para ${email}: ${generatedPassword}`);
   await dog.save();
   res.redirect('/admin/register');
 });
