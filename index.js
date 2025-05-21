@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/Dog');
+const Dog = require('./models/dog');
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado a MongoDB"))
