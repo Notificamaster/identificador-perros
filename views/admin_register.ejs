@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registrar Perro</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold mb-4">Registrar Nuevo Perro</h2>
+    <form action="/admin/register" method="POST" enctype="multipart/form-data" class="space-y-4">
+      <input name="name" placeholder="Nombre del perro" class="w-full border p-2 rounded" required />
+      <input name="owner" placeholder="Dueño" class="w-full border p-2 rounded" required />
+      <input name="email" placeholder="Correo del dueño" class="w-full border p-2 rounded" type="email" required />
+      <input name="phone" placeholder="Teléfono" class="w-full border p-2 rounded" />
+      <input name="breed" placeholder="Raza" class="w-full border p-2 rounded" />
+      <input name="food" placeholder="Comida favorita" class="w-full border p-2 rounded" />
+      <input name="illnesses" placeholder="Enfermedades" class="w-full border p-2 rounded" />
+      <input type="file" name="image" class="w-full" />
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Registrar</button>
+    </form>
+  </div>
+</body>
+</html>
+
