@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Perros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center">🐾 Mis Perros Registrados</h1>
+
+    <% if (dogs.length === 0) { %>
+      <p class="text-center text-gray-600">No has registrado ningún perro aún.</p>
+    <% } %>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <% dogs.forEach(dog => { %>
+        <div class="bg-white shadow rounded p-4">
+          <% if (dog.image) { %>
+            <img src="<%= dog.image %>" class="w-full h-48 object-cover rounded mb-3" alt="Perro">
+          <% } %>
+          <h2 class="text-xl font-semibold mb-1"><%= dog.name %></h2>
+          <p><strong>Raza:</strong> <%= dog.breed %></p>
+          <p><strong>Comida favorita:</strong> <%= dog.food %></p>
+          <a href="/dog/<%= dog._id %>" class="text-blue-500 underline mt-2 inline-block">Ver ficha</a>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</body>
+</html>
+

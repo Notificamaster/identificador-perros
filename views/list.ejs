@@ -1,0 +1,22 @@
+!DOCTYPE html>
+<html>
+<head>
+  <title>Lista de Perros Registrados</title>
+  <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+  <h1 class="text-2xl font-bold mb-4">🐾 Perros Registrados</h1>
+  <div class="grid gap-4">
+    <% dogs.forEach(dog => { %>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold"><%= dog.name %></h2>
+        <p><strong>Dueño:</strong> <%= dog.owner %></p>
+        <p><strong>Teléfono:</strong> <%= dog.phone %></p>
+        <p><strong>Raza:</strong> <%= dog.breed %></p>
+        <a class="text-blue-500 underline mt-2 inline-block" href="/dog/<%= dog._id %>">Ver ficha</a>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>
+
