@@ -93,10 +93,15 @@ app.get('/user/list', requireUser, async (req, res) => {
 });
 
 app.get('/admin/list', requireAdmin, async (req, res) => {
-  const dogs = await Dog.find();
+  const dogs = await Dog.find({
+    owner: { $exists: true, $ne: null },
+    role: { $exists: false }
+  });
+
   const success = req.query.success === '1';
-  res.render('list', { dogs });
+  res.render('list', { dogs, success });
 });
+
 
 app.get('/admin/register', requireAdmin, (req, res) => {
   res.render('admin_register');
