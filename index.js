@@ -94,6 +94,7 @@ app.get('/user/list', requireUser, async (req, res) => {
 
 app.get('/admin/list', requireAdmin, async (req, res) => {
   const dogs = await Dog.find();
+  const success = req.query.success === '1';
   res.render('list', { dogs });
 });
 
@@ -223,7 +224,7 @@ app.post('/admin/edit/:id', requireAdmin, upload.single('image'), async (req, re
   }
 
   await Dog.findByIdAndUpdate(req.params.id, update);
-  res.redirect('/admin/list');
+  res.redirect('/admin/list?success=1');
 });
 
 
