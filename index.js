@@ -98,9 +98,19 @@ app.get('/admin/list', requireAdmin, async (req, res) => {
   res.render('list', { dogs, success });
 });
 
-app.get('/admin/register', requireAdmin, (req, res) => {
-  res.render('admin_register');
+app.get('/admin/list', requireAdmin, async (req, res) => {
+  const { owner } = req.query;
+
+  const query = { role: 'user' };
+  if (owner) query.owner = owner;
+
+  const owners = await Dog.distinct("owner", { role: 'user' });
+  const dogs = await Dog.find(query);
+  const success = req.query.success === '1';
+
+  res.render('list', { dogs, success, owners, selectedOwner: owner });
 });
+
 
 app.post('/admin/register', requireAdmin, upload.single('image'), async (req, res) => {
   const { name, owner, email, phone, breed, food, illnesses } = req.body;
@@ -202,6 +212,32 @@ app.post('/dog/:id/location', async (req, res) => {
     res.status(500).send('Error al guardar ubicación o enviar correo');
   }
 });
+
+app.get('/admin/edit/:id', requireAdmin, async (req, res) => {
+  const dog = await Dog.findById(req.params.id);
+  res.render('admin_edit', { dog });
+});
+
+app.post('/admin/edit/:id', requireAdmin, upload.single('image'), async (req, res) => {
+  const { name, owner, email, phone, breed, food, illnesses } = req.body;
+  const update = {
+    name, owner, email, phone, breed, food, illnesses
+  };
+
+  if (req.file) {
+    update.image = req.file.path;
+  }
+
+  await Dog.findByIdAndUpdate(req.params.id, update);
+  res.redirect('/admin/list?success=1');
+});
+
+app.post('/admin/delete/:id', requireAdmin, async (req, res) => {
+  await Dog.findByIdAndDelete(req.params.id);
+  res.redirect('/admin/list?success=1');
+});
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
