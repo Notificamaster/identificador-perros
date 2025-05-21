@@ -1,21 +1,47 @@
-!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <title>Lista de Perros Registrados</title>
-  <link href="/css/styles.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Lista de Perros (Admin)</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-6">
-  <h1 class="text-2xl font-bold mb-4">🐾 Perros Registrados</h1>
-  <div class="grid gap-4">
-    <% dogs.forEach(dog => { %>
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-semibold"><%= dog.name %></h2>
-        <p><strong>Dueño:</strong> <%= dog.owner %></p>
-        <p><strong>Teléfono:</strong> <%= dog.phone %></p>
-        <p><strong>Raza:</strong> <%= dog.breed %></p>
-        <a class="text-blue-500 underline mt-2 inline-block" href="/dog/<%= dog._id %>">Ver ficha</a>
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Todos los Perros Registrados</h1>
+
+    <% if (dogs.length === 0) { %>
+      <p class="text-center text-gray-600">No hay perros registrados aún.</p>
+    <% } else { %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% dogs.forEach(dog => { %>
+          <div class="bg-white shadow-md rounded-lg p-4 flex flex-col">
+            <% if (dog.image) { %>
+              <img src="<%= dog.image %>" alt="<%= dog.name %>" class="h-48 w-full object-cover rounded mb-3">
+            <% } else { %>
+              <div class="h-48 w-full bg-gray-200 rounded mb-3 flex items-center justify-center text-gray-500">
+                Sin imagen
+              </div>
+            <% } %>
+
+            <h2 class="text-xl font-bold mb-1 text-gray-800"><%= dog.name %></h2>
+            <p class="text-gray-700"><strong>Dueño:</strong> <%= dog.owner %></p>
+            <p class="text-gray-700"><strong>Correo:</strong> <%= dog.email %></p>
+            <p class="text-gray-700"><strong>Teléfono:</strong> <%= dog.phone %></p>
+            <p class="text-gray-700"><strong>Raza:</strong> <%= dog.breed %></p>
+
+            <% if (dog.lastLocation && dog.lastLocation.lat) { %>
+              <p class="text-sm mt-2 text-gray-600">
+                📍 <a href="https://maps.google.com/?q=<%= dog.lastLocation.lat %>,<%= dog.lastLocation.lon %>" target="_blank" class="text-blue-500 underline">Última ubicación</a>
+              </p>
+            <% } %>
+
+            <a href="/dog/<%= dog._id %>" class="mt-auto bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded mt-4 transition">
+              Ver ficha
+            </a>
+          </div>
+        <% }); %>
       </div>
-    <% }) %>
+    <% } %>
   </div>
 </body>
 </html>
