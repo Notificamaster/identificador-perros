@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/dog');
+const Dog = require('./models/Dog');
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado a MongoDB"))
@@ -61,7 +61,7 @@ app.post('/login', async (req, res) => {
     return res.send('Credenciales inválidas');
   }
   req.session.user = { id: user._id, role: user.role, email: user.email };
-  if (user.role === 'admin') return res.redirect('/admin/list');
+  if (user.role === 'admin') return res.redirect('/admin/register');
   res.redirect('/user/list');
 });
 
@@ -99,7 +99,7 @@ app.post('/admin/register', requireAdmin, upload.single('image'), async (req, re
   const image = req.file ? '/uploads/' + req.file.filename : null;
   const dog = new Dog({ name, owner, email, phone, breed, food, illnesses, image, password: 'admin-added', role: 'user' });
   await dog.save();
-  res.redirect('/admin/list');
+  res.redirect('/admin/register');
 });
 
 app.get('/admin/signup', (req, res) => {
