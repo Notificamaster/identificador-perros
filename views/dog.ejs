@@ -45,19 +45,42 @@
     </div>
 
   </div>
+  
+  <% if (lastLocation && lastLocation.lat) { %>
+  <p class="mt-4">
+    📍 <strong>Última ubicación:</strong>
+    <a href="https://maps.google.com/?q=<%= lastLocation.lat %>,<%= lastLocation.lon %>" target="_blank" class="text-blue-600 underline">
+      Ver en Google Maps
+    </a>
+    <br/>
+    <span class="text-sm text-gray-500">Registrada el <%= new Date(lastLocation.date).toLocaleString() %></span>
+  </p>
+<% } %>
 
   <script>
-    navigator.geolocation.getCurrentPosition(pos => {
-      fetch(`/dog/<%= id %>/location`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude
-        })
+  window.onload = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        try {
+          await fetch('/dog/<%= id %>/location', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lat, lon })
+          });
+          console.log("Ubicación enviada");
+        } catch (err) {
+          console.error("Error al enviar ubicación:", err);
+        }
       });
-    });
-  </script>
+    }
+  };
+</script>
+
 </body>
 </html>
 

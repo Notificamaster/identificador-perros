@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/dog');
+const Dog = require('./models/og');
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado a MongoDB"))
@@ -148,6 +148,23 @@ app.get('/dog/:id', async (req, res) => {
     });
   } catch (err) {
     res.status(500).send('Error al buscar el perro');
+  }
+});
+
+
+app.post('/dog/:id/location', async (req, res) => {
+  try {
+    const { lat, lon } = req.body;
+    await Dog.findByIdAndUpdate(req.params.id, {
+      lastLocation: {
+        lat,
+        lon,
+        date: new Date()
+      }
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send('Error al guardar ubicación');
   }
 });
 
