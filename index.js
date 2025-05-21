@@ -93,21 +93,10 @@ app.get('/user/list', requireUser, async (req, res) => {
 });
 
 app.get('/admin/list', requireAdmin, async (req, res) => {
-  const { owner } = req.query;
-
-  const query = {
-    owner: { $exists: true, $ne: null },
-    role: { $exists: false }
-  };
-
-  if (owner) {
-    query.owner = owner; // filtro exacto por nombre del dueño
-  }
-
-  const owners = await Dog.distinct("owner", {
-    owner: { $exists: true },
-    role: { $exists: false }
-  });
+  const dogs = await Dog.find({ role: 'user' }); // ← esta línea muestra todos los perros
+  const success = req.query.success === '1';
+  res.render('list', { dogs, success });
+});
 
   const dogs = await Dog.find(query);
   const success = req.query.success === '1';
