@@ -1,5 +1,5 @@
-// index.js actualizado con conexión limpia y sin warnings para Railway
-// prueba de despliegue railway
+// index.js actualizado para mostrar login general como página de inicio y permitir registro de usuarios
+
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -11,15 +11,9 @@ const multer = require('multer');
 const nodemailer = require('nodemailer');
 const Dog = require('./models/dog');
 
-// Conexión limpia a MongoDB Atlas sin opciones obsoletas
-console.log("MONGO_URI →", process.env.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ Conectado a MongoDB');
-  })
-  .catch((err) => {
-    console.error('❌ Error al conectar a MongoDB', err);
-  });
+  .then(() => console.log("✅ Conectado a MongoDB"))
+  .catch(err => console.error("❌ Error al conectar a MongoDB", err));
 
 app.use(session({
   secret: 'clave_secreta_segura',
@@ -42,7 +36,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 function requireUser(req, res, next) {
   if (req.session.user && req.session.user.role === 'user') return next();
-  res.redirect('/user/login');
+  res.redirect('/login');
 }
 
 function requireAdmin(req, res, next) {
@@ -50,22 +44,40 @@ function requireAdmin(req, res, next) {
   res.redirect('/login');
 }
 
+// Mostrar login como página de inicio
 app.get('/', (req, res) => {
-  res.redirect('/user/login');
+  res.redirect('/login');
 });
 
-app.get('/user/login', (req, res) => {
-  res.render('user_login');
+// Login unificado para admin y usuarios
+app.get('/login', (req, res) => {
+  res.render('login');
 });
 
-app.post('/user/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const user = await Dog.findOne({ email, role: 'user' });
+  const user = await Dog.findOne({ email });
   if (!user || user.password !== password) {
     return res.send('Credenciales inválidas');
   }
   req.session.user = { id: user._id, role: user.role, email: user.email };
+  if (user.role === 'admin') return res.redirect('/admin/list');
   res.redirect('/user/list');
+});
+
+// Formulario para registrar nuevos usuarios
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
+app.post('/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  const existing = await Dog.findOne({ email });
+  if (existing) return res.send('⚠️ Ya existe un usuario con ese correo.');
+
+  const user = new Dog({ name, email, password, role: 'user' });
+  await user.save();
+  res.send('✅ Usuario registrado. Ahora puedes iniciar sesión en /login');
 });
 
 app.get('/user/list', requireUser, async (req, res) => {
@@ -78,12 +90,30 @@ app.get('/admin/list', requireAdmin, async (req, res) => {
   res.render('list', { dogs });
 });
 
+app.get('/admin/register', requireAdmin, (req, res) => {
+  res.render('admin_register');
+});
+
 app.post('/admin/register', requireAdmin, upload.single('image'), async (req, res) => {
   const { name, owner, email, phone, breed, food, illnesses } = req.body;
   const image = req.file ? '/uploads/' + req.file.filename : null;
   const dog = new Dog({ name, owner, email, phone, breed, food, illnesses, image, password: 'admin-added', role: 'user' });
   await dog.save();
   res.redirect('/admin/list');
+});
+
+app.get('/admin/signup', (req, res) => {
+  res.render('admin_signup');
+});
+
+app.post('/admin/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+  const existing = await Dog.findOne({ email });
+  if (existing) return res.send('⚠️ Ya existe un usuario con ese correo.');
+
+  const admin = new Dog({ name, email, password, role: 'admin' });
+  await admin.save();
+  res.send('✅ Administrador registrado con éxito. Ahora puedes ir a /login');
 });
 
 app.get('/dog/:id', async (req, res) => {
