@@ -202,6 +202,32 @@ app.post('/dog/:id/location', async (req, res) => {
   }
 });
 
+app.get('/admin/edit/:id', requireAdmin, async (req, res) => {
+  const dog = await Dog.findById(req.params.id);
+  res.render('admin_edit', { dog });
+});
+
+app.post('/admin/delete/:id', requireAdmin, async (req, res) => {
+  await Dog.findByIdAndDelete(req.params.id);
+  res.redirect('/admin/list');
+});
+
+app.post('/admin/edit/:id', requireAdmin, upload.single('image'), async (req, res) => {
+  const { name, owner, email, phone, breed, food, illnesses } = req.body;
+  const update = {
+    name, owner, email, phone, breed, food, illnesses
+  };
+
+  if (req.file) {
+    update.image = req.file.path;
+  }
+
+  await Dog.findByIdAndUpdate(req.params.id, update);
+  res.redirect('/admin/list');
+});
+
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);

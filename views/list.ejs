@@ -35,9 +35,19 @@
               </p>
             <% } %>
 
-            <a href="/dog/<%= dog._id %>" class="mt-auto bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded mt-4 transition">
-              Ver ficha
-            </a>
+            <div class="mt-4 space-y-2">
+              <a href="/dog/<%= dog._id %>" class="block bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded transition">
+                Ver ficha
+              </a>
+              <a href="/admin/edit/<%= dog._id %>" class="block bg-yellow-500 hover:bg-yellow-600 text-white text-center py-2 rounded transition">
+                Editar
+              </a>
+              <form action="/admin/delete/<%= dog._id %>" method="POST">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded transition">
+                  Eliminar
+                </button>
+              </form>
+            </div>
           </div>
         <% }); %>
       </div>
