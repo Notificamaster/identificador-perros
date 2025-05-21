@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const Dog = require('./models/Dog');
+const Dog = require('./models/dog');
 
 // Conexión limpia a MongoDB Atlas sin opciones obsoletas
 console.log("MONGO_URI →", process.env.MONGO_URI);
