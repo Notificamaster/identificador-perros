@@ -40,22 +40,10 @@
       <% } %>
     </div>
 
-    <div class="text-center mt-6">
-      <a href="/" class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Registrar otro perro</a>
-    </div>
+   
 
   </div>
   
-  <% if (lastLocation && lastLocation.lat) { %>
-  <p class="mt-4">
-    📍 <strong>Última ubicación:</strong>
-    <a href="https://maps.google.com/?q=<%= lastLocation.lat %>,<%= lastLocation.lon %>" target="_blank" class="text-blue-600 underline">
-      Ver en Google Maps
-    </a>
-    <br/>
-    <span class="text-sm text-gray-500">Registrada el <%= new Date(lastLocation.date).toLocaleString() %></span>
-  </p>
-<% } %>
 
   <script>
   window.onload = () => {
