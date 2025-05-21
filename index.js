@@ -9,6 +9,13 @@ const path = require('path');
 const session = require('express-session');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 const Dog = require('./models/dog');
 
 mongoose.connect(process.env.MONGO_URI)
@@ -158,18 +165,39 @@ app.get('/dog/:id', async (req, res) => {
 app.post('/dog/:id/location', async (req, res) => {
   try {
     const { lat, lon } = req.body;
-    await Dog.findByIdAndUpdate(req.params.id, {
-      lastLocation: {
-        lat,
-        lon,
-        date: new Date()
-      }
-    });
+    const dog = await Dog.findByIdAndUpdate(req.params.id, {
+      lastLocation: { lat, lon, date: new Date() }
+    }, { new: true });
+
+    if (!dog || !dog.email) {
+      return res.sendStatus(200); // sin correo, no enviamos
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: dog.email,
+      subject: `📍 Se ha escaneado el tag de tu perro: ${dog.name}`,
+      html: `
+        <p>Hola <strong>${dog.owner}</strong>,</p>
+        <p>Tu perro <strong>${dog.name}</strong> ha sido escaneado.</p>
+        <p><strong>Ubicación:</strong> 
+        <a href="https://maps.google.com/?q=${lat},${lon}" target="_blank">Ver en Google Maps</a></p>
+        <p>Hora del escaneo: ${new Date().toLocaleString("es-MX", { timeZone: "America/Mexico_City" })}</p>
+        <br>
+        <p>Este es un mensaje automático del sistema de identificación de perros 🐾</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✉️ Correo enviado a ${dog.email}`);
+
     res.sendStatus(200);
   } catch (err) {
-    res.status(500).send('Error al guardar ubicación');
+    console.error("❌ Error al guardar ubicación o enviar correo:", err);
+    res.status(500).send('Error al guardar ubicación o enviar correo');
   }
 });
+
 
 
 const PORT = process.env.PORT || 3000;
