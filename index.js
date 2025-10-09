@@ -241,8 +241,18 @@ app.post('/admin/delete/:id', requireAdmin, async (req, res) => {
   res.redirect('/admin/list?success=1');
 });
 
+const Dog = require('./models/Dog'); // o import Dog from './models/Dog.js';
 
-
+app.get('/admin/list', /* requireAdmin, */ async (req, res) => {
+  try {
+    const dogs = await Dog.find({})
+      .lean();
+    res.render('admin/list', { dogs });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Error al cargar la lista de perros');
+  }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
