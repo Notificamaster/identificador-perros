@@ -242,8 +242,7 @@ app.post('/admin/delete/:id', requireAdmin, async (req, res) => {
 });
 
 const Dog = require('./models/Dog'); // o import Dog from './models/Dog.js';
-
-app.get('/admin/list', /* requireAdmin, */ async (req, res) => {
+app.get('/admin/list',  requireAdmin, async (req, res) => {
   try {
     const dogs = await Dog.find({})
       .lean();
