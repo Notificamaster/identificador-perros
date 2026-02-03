@@ -185,13 +185,15 @@ app.post('/dog/:id/location', async (req, res) => {
 
    const transporter = nodemailer.createTransport({
      host: 'smtp.gmail.com',
-     port: 465,
+     port: 587,
      secure: true, // Forzamos el puerto 465 que suele ser más estable en Railway
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      },
-	  connectionTimeout: 10000 // 10 segundos de espera antes de rendirse
+		  },
+	 tls: {
+    rejectUnauthorized: false // Esto ayuda a saltar bloqueos de certificados en la nube
+          }
     });
 
     const mailOptions = {
