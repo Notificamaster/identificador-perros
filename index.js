@@ -183,12 +183,15 @@ app.post('/dog/:id/location', async (req, res) => {
 
     if (!dog || !dog.email) return res.sendStatus(200);
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
+   const transporter = nodemailer.createTransport({
+     host: 'smtp.gmail.com',
+     port: 465,
+     secure: true, // Forzamos el puerto 465 que suele ser más estable en Railway
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      }
+      },
+	  connectionTimeout: 10000 // 10 segundos de espera antes de rendirse
     });
 
     const mailOptions = {
